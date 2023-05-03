@@ -1,7 +1,7 @@
-LABEL org.opencontainers.image.source=https://github.com/symbolica-ai/triton-actions-runner
-
 # base
 FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
+
+LABEL org.opencontainers.image.source=https://github.com/symbolica-ai/triton-actions-runner
 
 # set the github runner version
 ARG RUNNER_VERSION="2.303.0"
