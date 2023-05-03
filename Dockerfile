@@ -34,7 +34,7 @@ RUN chmod +x start.sh
 
 # install custom triton
 RUN cd /home/docker \
-    && git clone --branch aot_with_custom_changes https://github.com/symbolica-ai/triton.git \
+    && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git \
     && cd triton/python \
     && pip install -e .
 
