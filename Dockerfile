@@ -1,10 +1,11 @@
 # base
 FROM nvidia/cuda:12.1.0-devel-ubuntu20.04
 
+# add source label to associate docker image to the repo
 LABEL org.opencontainers.image.source=https://github.com/symbolica-ai/triton-actions-runner
 
 # set the github runner version
-ARG RUNNER_VERSION="2.303.0"
+ARG RUNNER_VERSION="2.304.0"
 
 # update the base packages and add a non-sudo user
 RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
@@ -15,7 +16,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3
 
 # install largest dependencies known to man
-RUN pip install cmake torch regex
+RUN pip install --no-cache-dir cmake torch regex
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
@@ -32,11 +33,13 @@ COPY start.sh start.sh
 # make the script executable
 RUN chmod +x start.sh
 
-# install custom triton
+# install custom triton, remove triton repo after
 RUN cd /home/docker \
     && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git \
     && cd triton/python \
-    && pip install -e .
+    && pip install -e . \
+    && cd /home/docker \
+    && rm -rf /home/docker/triton
 
 # since the config and run script for actions are not allowed to be run by root,
 # set the user to "docker" so all subsequent commands are run as the docker user
