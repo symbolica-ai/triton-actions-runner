@@ -7,13 +7,15 @@ LABEL org.opencontainers.image.source=https://github.com/symbolica-ai/triton-act
 # set the github runner version
 ARG RUNNER_VERSION="2.304.0"
 
-# update the base packages and add a non-sudo user
-RUN apt-get update -y && apt-get upgrade -y && useradd -m docker
+# add a non-sudo user for actions
+RUN  useradd -m docker
 
 # install python and the packages the your code depends on along with jq so we can parse JSON
 # add additional packages as necessary
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3
+RUN apt-get update -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
 
 # install largest dependencies known to man
 RUN pip install --no-cache-dir cmake torch regex
