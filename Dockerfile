@@ -37,7 +37,7 @@ RUN chmod +x start.sh
 
 # install custom triton, remove triton repo after
 RUN cd /home/docker \
-    && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git \
+    && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git && git reset --hard 5bc4a175c7edeb2a5cd5a73c3ca158a95fe5a7a2 \
     && cd triton/python \
     && pip install -e . \
     && cd /home/docker \
