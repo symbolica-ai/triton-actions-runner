@@ -38,12 +38,8 @@ RUN chmod +x start.sh
 # install custom triton, remove triton repo after
 RUN cd /home/docker \
     && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git \
-    && cd triton \
-    && git reset --hard 5bc4a175c7edeb2a5cd5a73c3ca158a95fe5a7a2 \
-    && cd python \
-    && pip install -e . \
-    && cd /home/docker \
-    && rm -rf /home/docker/triton
+    && cd triton/python \
+    && pip install -e .
 
 # since the config and run script for actions are not allowed to be run by root,
 # set the user to "docker" so all subsequent commands are run as the docker user
