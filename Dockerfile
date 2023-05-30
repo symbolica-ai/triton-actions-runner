@@ -14,7 +14,7 @@ RUN  useradd -m docker
 # add additional packages as necessary
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev cmake ninja-build \
+    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev cmake ninja-build wget \
     && rm -rf /var/lib/apt/lists/*
 
 # cd into the user directory, download and unzip the github actions runner
