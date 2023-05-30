@@ -49,6 +49,7 @@ RUN cd /home/docker \
 RUN cd /home/docker \
     && wget https://pallini.di.uniroma1.it/nauty2_8_6.tar.gz \
     && tar -xzf nauty2_8_6.tar.gz \
+    && rm -rf nauty2_8_6.tar.gz \
     && cd nauty2_8_6 \
     && export CFLAGS="-O3" \
     && export CXXFLAGS="-O3" \
@@ -58,11 +59,14 @@ RUN cd /home/docker \
     && make -j8 install \
     && ln -s /usr/local/nauty/bin/* /usr/local/bin \
     && ln -s /usr/local/nauty/lib/* /usr/local/lib \
+    && cd .. \
+    && rm -rf nauty2_8_6
 
 # install custom GAP
 RUN cd /home/docker \
     && wget https://github.com/gap-system/gap/releases/download/v4.12.2/gap-4.12.2.tar.gz \
     && tar -xzf gap-4.12.2.tar.gz \
+    && rm gap-4.12.2.tar.gz \
     && cd gap-4.12.2 \
     && export CFLAGS="-O3" \
     && export CXXFLAGS="-O3" \
@@ -75,7 +79,9 @@ RUN cd /home/docker \
     && cp -R * /usr/local/gap/share/gap/pkg \
     && ln -s /usr/local/gap/bin/* /usr/local/bin \
     && ln -s /usr/local/gap/lib/* /usr/local/lib \
-    && ln -s /usr/local/gap/include/* /usr/local/include
+    && ln -s /usr/local/gap/include/* /usr/local/include \
+    && cd ../.. \
+    && rm -rf gap-4.12.2
 
 # install BlissInterface package
 RUN cd /usr/local/gap/share/gap/pkg \
