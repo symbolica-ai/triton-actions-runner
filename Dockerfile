@@ -14,7 +14,7 @@ RUN  useradd -m docker
 # add additional packages as necessary
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev cmake ninja-build wget \
+    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev cmake ninja-build wget m4 \
     && rm -rf /var/lib/apt/lists/*
 
 # cd into the user directory, download and unzip the github actions runner
@@ -51,6 +51,7 @@ RUN cd /home/docker \
     && tar -xzf nauty2_8_6.tar.gz \
     && cd nauty2_8_6 \
     && export CFLAGS="-O3" \
+    && export CXXFLAGS="-O3" \
     && mkdir -p /usr/local/nauty \
     && ./configure --prefix /usr/local/nauty \
     && make -j8 all \
@@ -64,6 +65,7 @@ RUN cd /home/docker \
     && tar -xzf gap-4.12.2.tar.gz \
     && cd gap-4.12.2 \
     && export CFLAGS="-O3" \
+    && export CXXFLAGS="-O3" \
     && mkdir -p /usr/local/gap \
     && ./configure --prefix /usr/local/gap \
     && make -j8 all \
@@ -79,6 +81,7 @@ RUN cd /usr/local/gap/share/gap/pkg \
     && wget https://github.com/gap-packages/BlissInterface/releases/download/v0.22/BlissInterface-0.22.tar.gz \
     && tar -xzf BlissInterface-0.22.tar.gz \
     && rm BlissInterface-0.22.tar.gz \
+    && export CFLAGS="-O3" \
     && export CXXFLAGS="-O3" \
     && mv BlissInterface-0.22 BlissInterface \
     && cd BlissInterface \
