@@ -14,7 +14,7 @@ RUN  useradd -m docker
 # add additional packages as necessary
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev \
+    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev cmake ninja-build \
     && rm -rf /var/lib/apt/lists/*
 
 # cd into the user directory, download and unzip the github actions runner
@@ -44,6 +44,53 @@ RUN cd /home/docker \
     && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git \
     && cd triton/tt_aot\
     && /venv/bin/python -m pip install .
+
+# install custom nauty
+RUN cd /home/docker \
+    && wget https://pallini.di.uniroma1.it/nauty2_8_6.tar.gz \
+    && tar -xzf nauty2_8_6.tar.gz \
+    && cd nauty2_8_6 \
+    && export CFLAGS="-O3" \
+    && mkdir -p /usr/local/nauty \
+    && ./configure --prefix /usr/local/nauty \
+    && make -j8 all \
+    && make -j8 install \
+    && ln -s /usr/local/nauty/bin/* /usr/local/bin \
+    && ln -s /usr/local/nauty/lib/* /usr/local/lib \
+
+# install custom GAP
+RUN cd /home/docker \
+    && wget https://github.com/gap-system/gap/releases/download/v4.12.2/gap-4.12.2.tar.gz \
+    && tar -xzf gap-4.12.2.tar.gz \
+    && cd gap-4.12.2 \
+    && export CFLAGS="-O3" \
+    && mkdir -p /usr/local/gap \
+    && ./configure --prefix /usr/local/gap \
+    && make -j8 all \
+    && make -j8 install \
+    && cd pkg \
+    && ../bin/BuildPackages.sh --with-gaproot=/usr/local/gap/lib/gap \
+    && cp -R * /usr/local/gap/share/gap/pkg \
+    && ln -s /usr/local/gap/bin/* /usr/local/bin \
+    && ln -s /usr/local/gap/lib/* /usr/local/lib \
+
+# install BlissInterface package
+RUN cd /usr/local/gap/share/gap/pkg \
+    && wget https://github.com/gap-packages/BlissInterface/releases/download/v0.22/BlissInterface-0.22.tar.gz \
+    && tar -xzf BlissInterface-0.22.tar.gz \
+    && rm BlissInterface-0.22.tar.gz \
+    && export CXXFLAGS="-O3" \
+    && mv BlissInterface-0.22 BlissInterface \
+    && cd BlissInterface \
+    && ./configure --with-gaproot=/usr/local/gap/lib/gap \
+    && make -j8
+
+# install IncidenceStructures package
+RUN cd /usr/local/gap/share/gap/pkg \
+    && wget https://github.com/nagygp/IncidenceStructures/releases/download/v0.3/IncidenceStructures-0.3.tar.gz \
+    && tar -xzf IncidenceStructures-0.3.tar.gz \
+    && rm IncidenceStructures-0.3.tar.gz \
+    && mv IncidenceStructures-0.3 IncidenceStructures
 
 # since the config and run script for actions are not allowed to be run by root,
 # set the user to "docker" so all subsequent commands are run as the docker user
