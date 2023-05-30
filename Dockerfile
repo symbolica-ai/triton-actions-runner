@@ -36,12 +36,13 @@ RUN python3 -m venv /venv \
     && /venv/bin/python -m pip install --upgrade pip
 
 # install largest dependencies known to man
+# TODO: might not be needed (new triton install has it covered)
 RUN /venv/bin/python -m pip install --no-cache-dir cmake torch regex
 
 # install custom triton, remove triton repo after
 RUN cd /home/docker \
     && git clone --branch symbolica_stable https://github.com/symbolica-ai/triton.git \
-    && cd triton/python \
+    && cd triton/tt_aot\
     && /venv/bin/python -m pip install .
 
 # since the config and run script for actions are not allowed to be run by root,
