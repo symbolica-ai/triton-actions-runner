@@ -75,6 +75,7 @@ RUN cd /home/docker \
     && cp -R * /usr/local/gap/share/gap/pkg \
     && ln -s /usr/local/gap/bin/* /usr/local/bin \
     && ln -s /usr/local/gap/lib/* /usr/local/lib \
+    && ln -s /usr/local/gap/include/* /usr/local/include
 
 # install BlissInterface package
 RUN cd /usr/local/gap/share/gap/pkg \
