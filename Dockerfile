@@ -45,14 +45,24 @@ RUN cd /home/docker \
     && cd triton/tt_aot\
     && /venv/bin/python -m pip install .
 
+RUN wget -qO- https://apt.llvm.org/llvm-snapshot.gpg.key > /etc/apt/trusted.gpg.d/apt.llvm.org.asc \
+    && echo 'deb http://apt.llvm.org/focal/ llvm-toolchain-focal-16 main' >> /etc/apt/sources.list \
+    && echo 'deb-src http://apt.llvm.org/focal/ llvm-toolchain-focal-16 main' >> /etc/apt/sources.list \
+    && apt-get update -y \
+    && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+    clang-16 \
+    && rm -rf /var/lib/apt/lists/*
+
 # install custom nauty
 RUN cd /home/docker \
-    && wget https://pallini.di.uniroma1.it/nauty2_8_6.tar.gz \
+    && wget -q https://pallini.di.uniroma1.it/nauty2_8_6.tar.gz \
     && tar -xzf nauty2_8_6.tar.gz \
     && rm -rf nauty2_8_6.tar.gz \
     && cd nauty2_8_6 \
-    && export CFLAGS="-O2" \
-    && export CXXFLAGS="-O2" \
+    && export CFLAGS="-O3" \
+    && export CXXFLAGS="-O3" \
+    && export CC="clang-16" \
+    && export CXX="clang++-16" \
     && mkdir -p /usr/local/nauty \
     && ./configure --prefix /usr/local/nauty \
     && make -j8 all \
@@ -64,12 +74,14 @@ RUN cd /home/docker \
 
 # install custom GAP
 RUN cd /home/docker \
-    && wget https://github.com/gap-system/gap/releases/download/v4.12.2/gap-4.12.2.tar.gz \
+    && wget -q https://github.com/gap-system/gap/releases/download/v4.12.2/gap-4.12.2.tar.gz \
     && tar -xzf gap-4.12.2.tar.gz \
     && rm gap-4.12.2.tar.gz \
     && cd gap-4.12.2 \
     && export CFLAGS="-O3" \
     && export CXXFLAGS="-O3" \
+    && export CC="clang-16" \
+    && export CXX="clang++-16" \
     && mkdir -p /usr/local/gap \
     && ./configure --prefix /usr/local/gap \
     && make -j8 all \
@@ -85,11 +97,13 @@ RUN cd /home/docker \
 
 # install BlissInterface package
 RUN cd /usr/local/gap/share/gap/pkg \
-    && wget https://github.com/gap-packages/BlissInterface/releases/download/v0.22/BlissInterface-0.22.tar.gz \
+    && wget -q https://github.com/gap-packages/BlissInterface/releases/download/v0.22/BlissInterface-0.22.tar.gz \
     && tar -xzf BlissInterface-0.22.tar.gz \
     && rm BlissInterface-0.22.tar.gz \
     && export CFLAGS="-O3" \
     && export CXXFLAGS="-O3" \
+    && export CC="clang-16" \
+    && export CXX="clang++-16" \
     && mv BlissInterface-0.22 BlissInterface \
     && cd BlissInterface \
     && ./configure --with-gaproot=/usr/local/gap/lib/gap \
@@ -97,7 +111,7 @@ RUN cd /usr/local/gap/share/gap/pkg \
 
 # install IncidenceStructures package
 RUN cd /usr/local/gap/share/gap/pkg \
-    && wget https://github.com/nagygp/IncidenceStructures/releases/download/v0.3/IncidenceStructures-0.3.tar.gz \
+    && wget -q https://github.com/nagygp/IncidenceStructures/releases/download/v0.3/IncidenceStructures-0.3.tar.gz \
     && tar -xzf IncidenceStructures-0.3.tar.gz \
     && rm IncidenceStructures-0.3.tar.gz \
     && mv IncidenceStructures-0.3 IncidenceStructures
