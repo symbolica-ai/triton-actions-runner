@@ -26,12 +26,6 @@ RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
 # install some additional dependencies
 RUN chown -R docker ~docker && DEBIAN_FRONTEND=noninteractive /home/docker/actions-runner/bin/installdependencies.sh
 
-# copy over the start.sh script
-COPY start.sh start.sh
-
-# make the script executable
-RUN chmod +x start.sh
-
 RUN python3 -m venv /venv \
     && /venv/bin/python -m pip install --upgrade pip
 
@@ -115,6 +109,12 @@ RUN cd /usr/local/gap/share/gap/pkg \
     && tar -xzf IncidenceStructures-0.3.tar.gz \
     && rm IncidenceStructures-0.3.tar.gz \
     && mv IncidenceStructures-0.3 IncidenceStructures
+
+# copy over the start.sh script
+COPY start.sh start.sh
+
+# make the script executable
+RUN chmod +x start.sh
 
 # since the config and run script for actions are not allowed to be run by root,
 # set the user to "docker" so all subsequent commands are run as the docker user

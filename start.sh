@@ -19,7 +19,9 @@ cd /home/docker/actions-runner
 
 cleanup() {
     echo "Removing runner..."
-    ./config.sh remove --unattended --token ${REG_TOKEN}
+
+    REMOVE_TOKEN=$(curl -sX POST -H "Authorization: token ${ACCESS_TOKEN}" https://api.github.com/repos/${ORGANIZATION}/${REPO_NAME}/actions/runners/remove-token | jq .token --raw-output)
+    ./config.sh remove --token ${REMOVE_TOKEN}
 }
 
 trap 'cleanup; exit 130' INT
