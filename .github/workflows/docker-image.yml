@@ -20,7 +20,7 @@ env:
 
 jobs:
   build-and-push-image:
-    runs-on: [docker-build-runner]
+    runs-on: docker-build-runner
     permissions:
       contents: read
       packages: write
