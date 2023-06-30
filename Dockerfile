@@ -14,8 +14,16 @@ RUN  useradd -m docker
 # add additional packages as necessary
 RUN apt-get update -y \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip sqlite3 libpq-dev cmake ninja-build wget m4 \
+    build-essential curl git jq libclang-dev libffi-dev libsqlite3-dev libssl-dev pkg-config python3 python3-venv python3-dev python3-pip libpq-dev cmake ninja-build wget m4 \
     && rm -rf /var/lib/apt/lists/*
+
+# install sqlite 3.42.0
+RUN wget https://www.sqlite.org/2023/sqlite-autoconf-3420000.tar.gz \
+    && tar -xvf sqlite-autoconf-3420000.tar.gz \
+    && cd sqlite-autoconf-3420000 \
+    && ./configure \
+    && make \
+    && make install
 
 # cd into the user directory, download and unzip the github actions runner
 RUN cd /home/docker && mkdir actions-runner && cd actions-runner \
