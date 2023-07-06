@@ -41,7 +41,7 @@ RUN /venv/bin/python -m pip install --no-cache-dir cmake regex
 
 # install custom triton
 RUN cd /home/docker \
-    && git clone --depth 1 git@github.com:openai/triton.git \
+    && git clone --depth 1 https://github.com/openai/triton.git \
     && cd triton/python \
     && /venv/bin/python -m pip install .
 
