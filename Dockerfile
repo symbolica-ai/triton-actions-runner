@@ -37,7 +37,7 @@ RUN chown -R docker ~docker && DEBIAN_FRONTEND=noninteractive /home/docker/actio
 RUN python3 -m venv /venv \
     && /venv/bin/python -m pip install --upgrade pip
 
-RUN /venv/bin/python -m pip install --no-cache-dir cmake regex
+RUN /venv/bin/python -m pip install --no-cache-dir cmake regex torch==2.0.0
 
 # install custom triton
 RUN cd /home/docker \
